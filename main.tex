@@ -2,6 +2,7 @@
 \setkomafont{author}{\scshape}
 \usepackage{blindtext}
 \usepackage[utf8]{inputenc}
+\usepackage{listings}
 
 \title{Avancerede Datastrukturer}
 \subtitle{Projekt 1 DM803}
@@ -11,25 +12,68 @@
 \begin{document}
 
 \maketitle
-\chapter{Skip lists}
-Generel about skip list...
+\section*{Introduction}
+For this project our goal was to implement the SplitList and ScapeGoat structures and analyse their performance.
+We have chosen to implement the structures in Scala.
+Since Scala is a more functional language than what one traditionally would choose for low level, mutable algorithms such as these,
+the underlying implementations are structured differently.
+This is a consequence of choosing pattern matching, null-safe, type-safe and immutable constructs as the building blocks rather than traditional imperative methods.
+\\
+
+Counting comparisons is a bit more complicated than with a traditional language, since some pattern matching or std-lib functions might "count" as a comparison.
+Because of this we have chosen to be a bit pessimistic about counting;
+we count a comparison when in doubt.
+
+It should also be noted that some of the functions might have a constant which is not exactly the same as the describe algorithm, but the complexity is the same.
+
+Finally we have used tail-recursion and recusive algorithms much more vigorously than the described algorithms to avoid side-effectful things such as while loops.
+
+\chapter{Split list}
+Complexity wise the interesting aspect of skip list is the trade off made by adjusting the $p$ value.
+The $p$ value is a probability threshold that decides whether a node should grow larger or not.
+
+This $p$ value, is actually a knob that trades traversal speed with update speed.
+Updating a node which has height $1$ is simple, because it only has one parent and one child.
+Traversing a linked list has complexity $\mathcal{O}(n)$, which skip list significantly improves by introducing these "highways".
+
+We expect that the worst-case can be invoked for insertion and deletion by always picking a node that near the end of the list.
+"near" means as far back as possible while having a height that equals the levelcap.
+
+We expect that by decreasing the $p$ value we will see increases in deletion and insertion comparisons, and reductions in search comparisons.
+
+Tuning wise it would seem most appropriate to have a small $p$ if fast searches are required, and having a medium sized $p$ for many insertions/deletions.\
+A small $p$ for many "highway" levels to do fast lookups.\
+A medium sized $p$ so the "highways" have a size that allows semi-optimal lookup, and not too small so the sizes of the
+
 \section{Investigateted}
 \subsection{Avarage shearch complexity}
 \subsection{Variation in shearch complexity}
 \section{Test}
 \chapter{Scapegoat Trees}
-Genrel about scapegoat list...
-Scapegoat Trees is a binary search tree that operate like a binarye search tree except of the balance of the tree is uphold by what we call $\alpha$-weight-balance. We have a $0.5\leq \alpha<1$ that we choose, to decide when the tree is $\alpha$-weight-balance. When we insert or delete a node such this is not the case anymore. 
+Scapegoat like the splitlist has a "tuning-knob" $\alpha$, which allows us tune the structure to the expected data.
+This $\alpha$ controls how "unbalanced" the tree is allowed to be, until a rebuild is forced.
 
-\subsection{Introduction}
-\subsection{Avarage shearch complexity}
-\subsection{Variation in shearch complexity}
-\subsection{frequensy and size}
-\section{Test}
-\chapter{Compare}
-\chapter{Appendix}
-\section{Code for skip Lists}
-\section{Code for Scapegoat trees}
+The minimum value of this $\alpha$ is $0.5$, which will mean that the tree will stay entirely balanced.
+Conversely an $\alpha$ which is close to $1$ will allow a more unbalanced tree.
+\\\\
+Obviously $\alpha = 0.5$ will result in very fast lookups, as the visits will always be the tree height, or $\mathcal{O}(log(n))$.
+This will come with the consequence that changes to the tree might very well invoke a rebuild, which is expensive.
+\\\\
+The other extreme $\alpha = 0.99...$ will ensure that the insertion time and deletion is relatively fast, but the lookup time will be $\mathcal{O}(n)$;
+all nodes only having one child, potentially created by the insertion sequence $1,2,3... n$.
+\\\\
+An overall good $\alpha$ must be somewhere in between.
+
+
+\section*{Notes for runtime}
+The code given will compile with a working scala compiler of version $> 2.10$.\\
+A pre-compiled jar and bytecode graal compiled version has been given.\\
+The requirements for running the jar is simply a Java-jre installation (tested with java 11 and openjdk:8).\\
+A Dockerfile has also been supplied (in some disaster case):
+\begin{lstlisting}
+docker build -t test .
+docker run -i test -p 0.5 < some_file
+\end{lstlisting}
 
 
 \end{document}
