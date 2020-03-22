@@ -3,6 +3,10 @@
 \usepackage{blindtext}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{amssymb}
 
 \title{Avancerede Datastrukturer}
 \subtitle{Projekt 1 DM803}
@@ -45,6 +49,21 @@ Tuning wise it would seem most appropriate to have a small $p$ if fast searches 
 A small $p$ for many "highway" levels to do fast lookups.\
 A medium sized $p$ so the "highways" have a size that allows semi-optimal lookup, and not too small so the sizes of the
 
+\section*{Additional notes}
+It should be noted that when running the splitlist from the CLI we use an algorithm to determine the levelcap:
+$$\ceil{log_{1/p}(n)}$$
+Where n is the maximum amount of elements ever present in the structure.\\
+Having $129$ elements and a $p$ of $0.5$:\\
+$0.5$ is a reduction factor $r$ of $2$ or $\frac{1}{p}$.\\
+We must find a height such that all elements will "fit".
+We must find $x$ that satisfies $x \in \mathbb{N}$ which also satisfies $n = \Big( \frac{1}{p} \Big)^{z}$ and $n \leq \Big( \frac{1}{p} \Big)^{x}$
+for some $x = \ceil{z}$.
+$$129 = 2^{\ceil{z}}$$
+$$log_2(129) = \ceil{z}$$
+$$7.011... = \ceil{z}$$
+$$x = 8$$
+
+
 \section{Investigateted}
 \subsection{Avarage shearch complexity}
 \subsection{Variation in shearch complexity}
@@ -64,6 +83,10 @@ all nodes only having one child, potentially created by the insertion sequence $
 \\\\
 An overall good $\alpha$ must be somewhere in between.
 
+\section*{Testing}
+The unit tests are contained freely in the main class, and can be invoked by supplying the appropriate command-line arguments.\\
+We have tested the example input given in the project description:\\
+\includegraphics[scale=0.5]{kimtest.png}
 
 \section*{Notes for runtime}
 The code given will compile with a working scala compiler of version $> 2.10$.\\
