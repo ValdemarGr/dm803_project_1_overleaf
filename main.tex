@@ -30,7 +30,7 @@ we count a comparison when in doubt.
 
 It should also be noted that some of the functions might have a constant which is not exactly the same as the describe algorithm, but the complexity is the same.
 
-Finally we have used tail-recursion and recusive algorithms much more vigorously than the described algorithms to avoid side-effectful things such as while loops.
+Finally we have used tail-recursion and recursive algorithms much more vigorously than the described algorithms to avoid side-effectful things such as while loops.
 
 \chapter{Split list}
 Complexity wise the interesting aspect of skip list is the trade off made by adjusting the $p$ value.
@@ -63,11 +63,14 @@ $$log_2(129) = \ceil{z}$$
 $$7.011... = \ceil{z}$$
 $$x = 8$$
 
+\subsection*{Findings}
+After testing we found the following two results:\\
+\includegraphics[scale=0.27]{sl-i.jpg}
+\includegraphics[scale=0.27]{sl-s.jpg}
+Note the exponential increase in the x axis mitigates (some of) the logarithmic growth.
+\\\\
+We can clearly see that decreasing the $p$ significantly decreases the comparisons vs the elements.
 
-\section{Investigateted}
-\subsection{Avarage shearch complexity}
-\subsection{Variation in shearch complexity}
-\section{Test}
 \chapter{Scapegoat Trees}
 Scapegoat like the splitlist has a "tuning-knob" $\alpha$, which allows us tune the structure to the expected data.
 This $\alpha$ controls how "unbalanced" the tree is allowed to be, until a rebuild is forced.
@@ -82,6 +85,18 @@ The other extreme $\alpha = 0.99...$ will ensure that the insertion time and del
 all nodes only having one child, potentially created by the insertion sequence $1,2,3... n$.
 \\\\
 An overall good $\alpha$ must be somewhere in between.
+
+\subsection*{Findings}
+After testing we found the following two results:\\
+\includegraphics[scale=0.45]{sg-i.jpg}\\
+\includegraphics[scale=0.45]{sg-s.jpg}\\
+Note the exponential increase in the x axis mitigates (some of) the logarithmic growth.
+\\\\
+As expected, when $\alpha$ is $0.5$ the scapegoat behaves extremely predictable in search time, independent from the insertion order, since the tree is always balanced.
+Increasing the $\alpha$ also increases the growth of the comparisons compared to using $0.5$.\\\\
+The $\alpha = 0.5$ increasing insertion order variant also behaves very much as expected;
+it grows a lot (even with logarithmic mitigation).
+Rebuilding the tree constantly is an expensive task.
 
 \section*{Testing}
 The unit tests are contained freely in the main class, and can be invoked by supplying the appropriate command-line arguments.\\
